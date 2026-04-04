@@ -1,0 +1,10 @@
+grpc_server:
+  socket_path: /etc/kubeedge/coap.sock
+common:
+  name: Coap-mapper
+  version: v1.13.0
+  api_version: v1.0.0
+  protocol: coap
+  address: 127.0.0.1
+  http_port: 7778
+  edgecore_sock: /etc/kubeedge/dmi.sock
