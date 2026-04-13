@@ -22,8 +22,8 @@ import (
 
 	"k8s.io/klog/v2"
 
-	"github.com/kubeedge/coap/driver"
 	dmiapi "github.com/kubeedge/api/apis/dmi/v1beta1"
+	"github.com/kubeedge/coap/driver"
 	"github.com/kubeedge/mapper-framework/pkg/common"
 	"github.com/kubeedge/mapper-framework/pkg/grpcclient"
 )

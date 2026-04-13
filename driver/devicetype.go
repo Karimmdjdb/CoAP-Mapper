@@ -16,6 +16,7 @@ type CustomizedClient struct {
 	// TODO add some variables to help you better implement device drivers
 	deviceMutex sync.Mutex
 	ProtocolConfig
+	DataForPush map[string]interface{}
 }
 
 type ProtocolConfig struct {

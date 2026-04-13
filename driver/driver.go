@@ -18,6 +18,7 @@ func NewClient(protocol ProtocolConfig) (*CustomizedClient, error) {
 		ProtocolConfig: protocol,
 		deviceMutex:    sync.Mutex{},
 		// TODO initialize the variables you added
+		DataForPush: map[string]interface{}{},
 	}
 	return client, nil
 }
@@ -30,7 +31,7 @@ func (c *CustomizedClient) InitDevice() error {
 
 func (c *CustomizedClient) GetDeviceData(visitor *VisitorConfig) (interface{}, error) {
 	ip := c.ProtocolConfig.ConfigData.MoteAddr
-	query := visitor.QueryPath
+	query := visitor.VisitorConfigData.QueryPath
 	klog.Infof("GET request to %s%s", ip, query)
 
 	co, err := udp.Dial(ip)
@@ -56,9 +57,24 @@ func (c *CustomizedClient) GetDeviceData(visitor *VisitorConfig) (interface{}, e
 			return nil, err
 		}
 		value := string(payload)
+		c.DataForPush[query] = value
 		return value, nil
 	}
 	return nil, nil
+}
+
+func (c *CustomizedClient) GetDeviceDataForPush(visitor *VisitorConfig) (interface{}, error) {
+	c.deviceMutex.Lock()
+	defer c.deviceMutex.Unlock()
+
+	query := visitor.VisitorConfigData.QueryPath
+
+	value, ok := c.DataForPush[query]
+	if !ok {
+		return nil, fmt.Errorf("field '%s' not found in data for push", query)
+	}
+	delete(c.DataForPush, query)
+	return value, nil
 }
 
 func (c *CustomizedClient) DeviceDataWrite(visitor *VisitorConfig, deviceMethodName string, propertyName string, data interface{}) error {

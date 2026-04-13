@@ -13,6 +13,7 @@ import (
 
 	"k8s.io/klog/v2"
 
+	dmiapi "github.com/kubeedge/api/apis/dmi/v1beta1"
 	dbInflux "github.com/kubeedge/coap/data/dbmethod/influxdb2"
 	dbMysql "github.com/kubeedge/coap/data/dbmethod/mysql"
 	dbRedis "github.com/kubeedge/coap/data/dbmethod/redis"
@@ -22,7 +23,6 @@ import (
 	otelMethod "github.com/kubeedge/coap/data/publish/otel"
 	"github.com/kubeedge/coap/data/stream"
 	"github.com/kubeedge/coap/driver"
-	dmiapi "github.com/kubeedge/api/apis/dmi/v1beta1"
 	"github.com/kubeedge/mapper-framework/pkg/common"
 	"github.com/kubeedge/mapper-framework/pkg/global"
 	"github.com/kubeedge/mapper-framework/pkg/util/parse"
@@ -210,9 +210,9 @@ func pushHandler(ctx context.Context, twin *common.Twin, client *driver.Customiz
 		for {
 			select {
 			case <-ticker.C:
-				deviceData, err := client.GetDeviceData(visitorConfig)
+				deviceData, err := client.GetDeviceDataForPush(visitorConfig)
 				if err != nil {
-					klog.Errorf("publish error: %v", err)
+					klog.V(4).Infof("publish error: %v", err)
 					continue
 				}
 				sData, err := common.ConvertToString(deviceData)
